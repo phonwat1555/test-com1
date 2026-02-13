@@ -36,6 +36,9 @@
                             '0%': { opacity: 0, transform: 'translateY(20px)' },
                             '100%': { opacity: 1, transform: 'translateY(0)' },
                         }
+                    },
+                    screens: {
+                        'xs': '475px',
                     }
                 }
             }
@@ -55,17 +58,26 @@
         .screen-hidden { display: none !important; }
 
         body {
-            font-size: 1.125rem;
+            /* ใช้ฟอนต์พื้นฐานแบบ Responsive */
+            font-size: 1.125rem; /* Default */
             line-height: 1.5;
             background-color: #f8fafc;
             background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
             background-size: 24px 24px;
+            height: 100vh;
+            overflow: hidden; /* ซ่อน Scrollbar หลักของ Body เพื่อทำ App-like feel */
+        }
+        
+        /* ให้ Scrollbar ทำงานเฉพาะใน Container ที่ต้องการ */
+        .overflow-y-auto {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
-        /* Custom Scrollbar for Leaderboard */
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        /* Custom Scrollbar for Leaderboard & Content */
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; border: 2px solid #f1f5f9; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         /* Progress Bar Striped Animation */
@@ -78,75 +90,82 @@
             0% { background-position: 1rem 0; }
             100% { background-position: 0 0; }
         }
+
+        /* Responsive Text Classes Utility */
+        .text-responsive-title { font-size: clamp(1.5rem, 4vw, 2.25rem); } /* 24px - 36px */
+        .text-responsive-header { font-size: clamp(1.25rem, 2.5vw, 1.875rem); } /* 20px - 30px */
+        .text-responsive-base { font-size: clamp(1rem, 1.5vw, 1.25rem); } /* 16px - 20px */
+        .text-responsive-lg { font-size: clamp(1.125rem, 2vw, 1.5rem); } /* 18px - 24px */
+
     </style>
 </head>
-<body class="text-slate-800 min-h-screen pb-12">
+<body class="text-slate-800 flex flex-col h-screen">
 
     <!-- ============================================== -->
     <!-- หน้าหลัก (Home Screen) -->
     <!-- ============================================== -->
-    <div id="screen-home" class="max-w-6xl mx-auto p-4 pt-8 fade-in">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start h-[calc(100vh-4rem)]">
+    <div id="screen-home" class="w-full h-full p-4 fade-in flex flex-col">
+        <!-- Grid ปรับให้เต็มพื้นที่ -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 h-full">
             
-            <!-- ฝั่งซ้าย: Leaderboard -->
-            <div class="lg:col-span-7 bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl overflow-hidden border border-slate-100 flex flex-col h-full max-h-[700px]">
-                <div class="p-6 bg-white border-b border-slate-100 sticky top-0 z-20 shadow-sm">
+            <!-- ฝั่งซ้าย: Leaderboard (ปรับให้ยืดหยุ่นเต็มสูง) -->
+            <div class="lg:col-span-7 xl:col-span-8 bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl overflow-hidden border border-slate-100 flex flex-col h-full">
+                <div class="p-5 bg-white border-b border-slate-100 sticky top-0 z-20 shadow-sm flex-shrink-0">
                     <div class="flex items-center gap-4">
                         <div class="bg-gradient-to-br from-yellow-100 to-yellow-200 p-3 rounded-2xl text-yellow-700 shadow-sm">
-                            <i class="fa-solid fa-trophy text-2xl"></i>
+                            <i class="fa-solid fa-trophy text-2xl lg:text-3xl"></i>
                         </div>
                         <div>
-                            <h2 class="text-2xl font-bold text-slate-800 leading-tight">ทำเนียบคนเก่ง</h2>
-                            <p class="text-slate-500 text-base">รายชื่อผู้ทำคะแนนสูงสุดล่าสุด</p>
+                            <h2 class="text-responsive-header font-bold text-slate-800 leading-tight">ทำเนียบคนเก่ง</h2>
+                            <p class="text-slate-500 text-sm lg:text-base">รายชื่อผู้ทำคะแนนสูงสุดล่าสุด</p>
                         </div>
                     </div>
                 </div>
                 
                 <div class="overflow-y-auto custom-scrollbar flex-grow bg-slate-50/50">
                     <table class="w-full text-left border-collapse">
-                        <thead class="sticky top-0 z-10 bg-slate-100/95 backdrop-blur-sm text-slate-500 text-base uppercase tracking-wider shadow-sm">
+                        <thead class="sticky top-0 z-10 bg-slate-100/95 backdrop-blur-sm text-slate-500 text-base lg:text-lg uppercase tracking-wider shadow-sm">
                             <tr>
                                 <th class="p-4 pl-6 font-semibold w-16 text-center">#</th>
                                 <th class="p-4 font-semibold">ชื่อ - นามสกุล</th>
                                 <th class="p-4 font-semibold text-center pr-6">คะแนน</th>
                             </tr>
                         </thead>
-                        <tbody id="leaderboard-body" class="divide-y divide-slate-100 text-lg">
+                        <tbody id="leaderboard-body" class="divide-y divide-slate-100 text-responsive-base">
                             <!-- Data will be populated here by JS -->
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- ฝั่งขวา: รายละเอียดวิชาและปุ่มเริ่มทำข้อสอบ -->
-            <div class="lg:col-span-5 bg-gradient-to-br from-blue-700 to-indigo-800 rounded-3xl shadow-xl overflow-hidden border border-slate-100 text-white relative flex flex-col justify-center p-8 h-full max-h-[700px]">
+            <!-- ฝั่งขวา: รายละเอียดวิชาและปุ่มเริ่มทำข้อสอบ (ปรับให้ยืดหยุ่น) -->
+            <div class="lg:col-span-5 xl:col-span-4 bg-gradient-to-br from-blue-700 to-indigo-800 rounded-3xl shadow-xl overflow-hidden border border-slate-100 text-white relative flex flex-col justify-center p-6 lg:p-10 h-full">
                 <!-- Background decoration -->
                 <div class="absolute top-0 right-0 -mt-10 -mr-10 text-white opacity-10 text-9xl pointer-events-none">
                     <i class="fa-solid fa-shapes"></i>
                 </div>
                 
-                <div class="relative z-10 text-center flex flex-col items-center justify-center h-full">
-                    <div class="w-28 h-28 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center mb-6 shadow-inner border border-white/20 animate-pulse-slow">
-                        <i class="fa-solid fa-pen-ruler text-5xl text-white"></i>
+                <!-- Center Content Vertically -->
+                <div class="relative z-10 text-center flex flex-col items-center justify-center h-full gap-2">
+                    <div class="flex-grow flex flex-col justify-center items-center">
+                        <div class="w-24 h-24 lg:w-32 lg:h-32 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center mb-6 lg:mb-8 shadow-inner border border-white/20 animate-pulse-slow">
+                            <i class="fa-solid fa-pen-ruler text-4xl lg:text-6xl text-white"></i>
+                        </div>
+                        
+                        <h1 class="text-responsive-title font-bold mb-3 tracking-wide leading-snug">วิชาองค์ประกอบศิลป์<br>สำหรับงานคอมพิวเตอร์</h1>
+                        <div class="h-1.5 w-24 bg-blue-400 mx-auto rounded-full mb-6"></div>
+                        <p class="text-blue-100 text-lg lg:text-xl font-light tracking-wider">รหัสวิชา 20204-2006 ปวช.2</p>
                     </div>
                     
-                    <h1 class="text-3xl font-bold mb-2 tracking-wide leading-snug">วิชาองค์ประกอบศิลป์<br>สำหรับงานคอมพิวเตอร์</h1>
-                    <div class="h-1 w-20 bg-blue-400 mx-auto rounded-full mb-4"></div>
-                    <p class="text-blue-100 text-xl font-light mb-10 tracking-wider">รหัสวิชา 20204-2006 ปวช.2</p>
-                    
-                    <button onclick="goToRegister()" class="group relative w-full max-w-sm bg-white text-blue-800 font-bold text-2xl py-4 px-8 rounded-2xl shadow-xl hover:shadow-2xl hover:bg-blue-50 transition-all transform hover:-translate-y-1 overflow-hidden">
-                        <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-blue-100/50 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
-                        <span class="flex items-center justify-center gap-3 relative z-10">
-                            <i class="fa-solid fa-play text-xl"></i>
-                            เริ่มทำข้อสอบ
-                        </span>
-                    </button>
-                    
-                    <style>
-                        @keyframes shimmer {
-                            100% { transform: translateX(100%); }
-                        }
-                    </style>
+                    <div class="w-full pb-4">
+                        <button onclick="goToRegister()" class="group relative w-full max-w-md mx-auto bg-white text-blue-800 font-bold text-xl lg:text-2xl py-4 lg:py-5 px-8 rounded-2xl shadow-xl hover:shadow-2xl hover:bg-blue-50 transition-all transform hover:-translate-y-1 overflow-hidden">
+                            <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-blue-100/50 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                            <span class="flex items-center justify-center gap-3 relative z-10">
+                                <i class="fa-solid fa-play text-xl lg:text-2xl"></i>
+                                เริ่มทำข้อสอบ
+                            </span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -156,49 +175,50 @@
     <!-- ============================================== -->
     <!-- หน้าลงทะเบียน (Register Screen) -->
     <!-- ============================================== -->
-    <div id="screen-register" class="screen-hidden max-w-lg mx-auto p-4 pt-16 slide-up">
-        <div class="bg-white p-10 rounded-3xl shadow-xl border border-slate-200 relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-2 bg-blue-600"></div>
+    <div id="screen-register" class="screen-hidden w-full h-full flex items-center justify-center p-4 slide-up overflow-y-auto">
+        <div class="w-full max-w-2xl bg-white p-8 lg:p-12 rounded-3xl shadow-xl border border-slate-200 relative overflow-hidden my-auto">
+            <div class="absolute top-0 left-0 w-full h-3 bg-blue-600"></div>
             
-            <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-                <i class="fa-solid fa-user-tag text-4xl"></i>
+            <div class="text-center mb-8">
+                <div class="w-24 h-24 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm ring-4 ring-blue-50/50">
+                    <i class="fa-solid fa-user-tag text-5xl"></i>
+                </div>
+                <h2 class="text-responsive-title font-bold text-slate-800 mb-2">ข้อมูลผู้เข้าสอบ</h2>
+                <p class="text-slate-500 text-lg lg:text-xl">กรุณากรอกข้อมูลให้ครบถ้วนเพื่อเริ่มทำข้อสอบ</p>
             </div>
             
-            <h2 class="text-3xl font-bold text-center text-slate-800 mb-2">ข้อมูลผู้เข้าสอบ</h2>
-            <p class="text-center text-slate-500 mb-8 text-lg">กรุณากรอกข้อมูลของท่านก่อนเริ่มทำแบบทดสอบ</p>
-            
-            <div id="error-msg" class="hidden bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-base flex items-center gap-3 border border-red-100">
+            <div id="error-msg" class="hidden bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-base lg:text-lg flex items-center gap-3 border border-red-100 animate-pulse">
                 <i class="fa-solid fa-circle-exclamation text-xl"></i>
                 <span id="error-text"></span>
             </div>
 
-            <form id="register-form" onsubmit="submitRegister(event)" class="space-y-6">
+            <form id="register-form" onsubmit="submitRegister(event)" class="space-y-6 lg:space-y-8">
                 <div>
-                    <label class="block text-lg font-bold text-slate-700 mb-2">ชื่อ - นามสกุล</label>
-                    <div class="relative">
+                    <label class="block text-xl lg:text-2xl font-bold text-slate-700 mb-2">ชื่อ - นามสกุล</label>
+                    <div class="relative group">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <i class="fa-solid fa-user text-slate-400"></i>
+                            <i class="fa-solid fa-user text-slate-400 text-xl group-focus-within:text-blue-500 transition-colors"></i>
                         </div>
                         <input type="text" id="input-name" placeholder="เช่น นายสมชาย ใจดี" 
-                            class="w-full pl-11 p-4 text-lg border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all">
+                            class="w-full pl-12 p-4 lg:p-5 text-xl lg:text-2xl border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all placeholder:text-slate-300">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-lg font-bold text-slate-700 mb-2">รหัสนักศึกษา</label>
-                    <div class="relative">
+                    <label class="block text-xl lg:text-2xl font-bold text-slate-700 mb-2">รหัสนักศึกษา</label>
+                    <div class="relative group">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <i class="fa-solid fa-id-card text-slate-400"></i>
+                            <i class="fa-solid fa-id-card text-slate-400 text-xl group-focus-within:text-blue-500 transition-colors"></i>
                         </div>
                         <input type="text" id="input-studentId" placeholder="เช่น 65202040001" 
-                            class="w-full pl-11 p-4 text-lg border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all">
+                            class="w-full pl-12 p-4 lg:p-5 text-xl lg:text-2xl border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all placeholder:text-slate-300">
                     </div>
                 </div>
                 
-                <div class="pt-4 grid grid-cols-2 gap-4">
-                    <button type="button" onclick="goToHome()" class="bg-white text-slate-600 font-bold text-lg py-3 px-6 rounded-xl hover:bg-slate-50 transition-colors border-2 border-slate-200">
+                <div class="pt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <button type="button" onclick="goToHome()" class="order-2 sm:order-1 w-full bg-white text-slate-600 font-bold text-xl py-4 rounded-xl hover:bg-slate-50 transition-colors border-2 border-slate-200">
                         ยกเลิก
                     </button>
-                    <button type="submit" class="bg-blue-600 text-white font-bold text-lg py-3 px-6 rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/30 flex justify-center items-center gap-2">
+                    <button type="submit" class="order-1 sm:order-2 w-full bg-blue-600 text-white font-bold text-xl py-4 rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/30 flex justify-center items-center gap-2">
                         เข้าสู่ห้องสอบ <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>
@@ -207,116 +227,127 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- หน้าทำข้อสอบ (Quiz Screen) - ปรับปรุงใหม่ -->
+    <!-- หน้าทำข้อสอบ (Quiz Screen) - Full Height & Width -->
     <!-- ============================================== -->
-    <div id="screen-quiz" class="screen-hidden max-w-4xl mx-auto p-4 pt-4 zoom-in">
-        
-        <!-- Header Info Card -->
-        <div class="bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 flex justify-between items-center">
-             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                    <i class="fa-solid fa-user"></i>
+    <div id="screen-quiz" class="screen-hidden w-full h-full p-4 fade-in flex flex-col overflow-hidden">
+        <div class="w-full max-w-[1600px] mx-auto flex flex-col h-full gap-4">
+            
+            <!-- Header Info & Progress -->
+            <div class="bg-white/90 backdrop-blur-md p-4 lg:p-6 rounded-2xl shadow-sm border border-slate-200 flex-shrink-0">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
+                    <!-- User Info -->
+                    <div class="flex items-center gap-4 w-full md:w-auto">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xl">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <p class="text-sm text-slate-500">ผู้เข้าสอบ</p>
+                            <h3 class="font-bold text-slate-800 text-lg lg:text-xl leading-tight" id="display-username">Username</h3>
+                        </div>
+                        <div class="md:hidden bg-slate-100 px-3 py-1 rounded-lg text-slate-600 text-sm">
+                            <span id="display-studentid-mobile">ID</span>
+                        </div>
+                    </div>
+                    
+                    <!-- ID Desktop -->
+                    <div class="hidden md:block bg-slate-100 px-5 py-2 rounded-xl text-slate-600 font-medium text-lg">
+                        <i class="fa-solid fa-id-badge mr-2"></i><span id="display-studentid">ID</span>
+                    </div>
                 </div>
+
+                <!-- Progress Bar -->
                 <div>
-                    <p class="text-sm text-slate-500">ผู้เข้าสอบ</p>
-                    <p class="font-bold text-slate-800 leading-tight" id="display-username">Username</p>
-                </div>
-             </div>
-             <div>
-                <div class="bg-slate-100 px-4 py-2 rounded-xl text-slate-600 font-medium text-sm">
-                    <i class="fa-solid fa-id-badge mr-2"></i><span id="display-studentid">ID</span>
-                </div>
-             </div>
-        </div>
-
-        <!-- Progress Section -->
-        <div class="mb-8 px-2">
-            <div class="flex justify-between items-end mb-2">
-                <span class="text-slate-500 font-medium">ความคืบหน้า</span>
-                <span class="text-blue-600 font-bold text-xl"><span id="progress-percent">0</span>%</span>
-            </div>
-            <div class="w-full bg-slate-200 rounded-full h-4 overflow-hidden shadow-inner">
-                <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-600 h-4 rounded-full transition-all duration-700 ease-out progress-striped shadow-[0_0_10px_rgba(59,130,246,0.5)] relative" style="width: 0%">
-                    <div class="absolute right-0 top-0 h-full w-2 bg-white/30 blur-[2px]"></div>
-                </div>
-            </div>
-            <div class="flex justify-between mt-2 text-xs text-slate-400 font-medium uppercase tracking-wide">
-                <span>Start</span>
-                <span>Finish</span>
-            </div>
-        </div>
-
-        <!-- Question Card -->
-        <div class="bg-white p-6 sm:p-10 rounded-[2rem] shadow-xl border border-slate-100 relative overflow-hidden">
-            <!-- Background Blob Decoration -->
-            <div class="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full -mr-20 -mt-20 opacity-50 blur-3xl pointer-events-none"></div>
-            <div class="absolute bottom-0 left-0 w-48 h-48 bg-yellow-50 rounded-full -ml-10 -mb-10 opacity-50 blur-2xl pointer-events-none"></div>
-
-            <div class="relative z-10">
-                <div class="flex items-start gap-4 mb-8">
-                    <div class="bg-blue-600 text-white min-w-[3.5rem] h-14 rounded-2xl flex items-center justify-center text-2xl font-bold shadow-lg shadow-blue-200">
-                        <span id="question-current-num">1</span>
+                    <div class="flex justify-between items-end mb-2">
+                        <span class="text-slate-500 font-medium text-sm lg:text-base">ความคืบหน้าการสอบ</span>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-blue-600 font-bold text-2xl" id="progress-percent">0</span>
+                            <span class="text-blue-600 font-bold text-base">%</span>
+                        </div>
                     </div>
-                    <div class="flex-grow pt-1">
-                        <h2 id="question-text" class="text-2xl sm:text-3xl font-semibold text-slate-800 leading-relaxed animate-fade-in">
-                            <!-- Question text goes here -->
-                        </h2>
+                    <div class="w-full bg-slate-200 rounded-full h-3 lg:h-4 overflow-hidden shadow-inner">
+                        <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-full transition-all duration-700 ease-out progress-striped shadow-[0_0_10px_rgba(59,130,246,0.5)] relative" style="width: 0%">
+                            <div class="absolute right-0 top-0 h-full w-2 bg-white/30 blur-[2px]"></div>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Question & Options Area (Scrollable) -->
+            <div class="flex-grow overflow-y-auto custom-scrollbar bg-white rounded-[2rem] shadow-xl border border-slate-100 relative">
+                <!-- Background Blob Decoration -->
+                <div class="absolute top-0 right-0 w-96 h-96 bg-blue-50 rounded-full -mr-32 -mt-32 opacity-40 blur-3xl pointer-events-none sticky"></div>
                 
-                <div id="options-container" class="space-y-4 relative z-10 pl-0 sm:pl-[4.5rem]">
-                    <!-- Options will be generated here -->
-                </div>
+                <div class="relative z-10 p-6 lg:p-12 min-h-full flex flex-col">
+                    <!-- Question -->
+                    <div class="flex items-start gap-4 lg:gap-6 mb-8 lg:mb-12">
+                        <div class="flex-shrink-0 bg-blue-600 text-white w-14 h-14 lg:w-20 lg:h-20 rounded-2xl lg:rounded-3xl flex items-center justify-center text-2xl lg:text-4xl font-bold shadow-lg shadow-blue-200">
+                            <span id="question-current-num">1</span>
+                        </div>
+                        <div class="flex-grow pt-1 lg:pt-2">
+                            <h2 id="question-text" class="text-2xl lg:text-4xl font-medium text-slate-800 leading-relaxed animate-fade-in">
+                                <!-- Question text goes here -->
+                            </h2>
+                        </div>
+                    </div>
+                    
+                    <!-- Options -->
+                    <div id="options-container" class="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6 relative z-10 pl-0 md:pl-[4.5rem] lg:pl-[6.5rem] flex-grow content-start">
+                        <!-- Options will be generated here -->
+                    </div>
 
-                <div class="mt-12 flex justify-end pt-6 border-t border-slate-100 pl-0 sm:pl-[4.5rem]">
-                    <button id="btn-next" onclick="nextQuestion()" disabled class="group relative overflow-hidden font-bold text-xl py-3.5 px-10 rounded-2xl flex items-center gap-3 transition-all shadow-md bg-slate-200 text-slate-400 cursor-not-allowed">
-                        <span id="btn-next-text" class="relative z-10">ข้อถัดไป</span>
-                        <i id="btn-next-icon" class="fa-solid fa-chevron-right text-sm relative z-10 transition-transform group-hover:translate-x-1"></i>
-                    </button>
+                    <!-- Footer / Next Button -->
+                    <div class="mt-8 lg:mt-12 flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 border-t border-slate-100 pl-0 md:pl-[4.5rem] lg:pl-[6.5rem]">
+                        <div class="text-slate-400 text-lg hidden sm:block">
+                            เหลืออีก <span id="questions-remaining" class="font-bold text-slate-600">29</span> ข้อ
+                        </div>
+                        <button id="btn-next" onclick="nextQuestion()" disabled class="w-full sm:w-auto group relative overflow-hidden font-bold text-xl lg:text-2xl py-4 px-12 rounded-2xl flex justify-center items-center gap-3 transition-all shadow-md bg-slate-200 text-slate-400 cursor-not-allowed">
+                            <span id="btn-next-text" class="relative z-10">ข้อถัดไป</span>
+                            <i id="btn-next-icon" class="fa-solid fa-chevron-right text-base lg:text-lg relative z-10 transition-transform group-hover:translate-x-1"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="text-center mt-6 text-slate-400 text-sm">
-            เหลืออีก <span id="questions-remaining" class="font-bold text-slate-600">29</span> ข้อ
         </div>
     </div>
 
     <!-- ============================================== -->
     <!-- หน้าสรุปผล (Result Screen) -->
     <!-- ============================================== -->
-    <div id="screen-result" class="screen-hidden max-w-lg mx-auto p-4 pt-16 zoom-in">
-        <div class="bg-white p-10 rounded-3xl shadow-2xl border border-slate-100 text-center relative overflow-hidden">
+    <div id="screen-result" class="screen-hidden w-full h-full flex items-center justify-center p-4 zoom-in overflow-y-auto">
+        <div class="w-full max-w-2xl bg-white p-8 lg:p-16 rounded-[3rem] shadow-2xl border border-slate-100 text-center relative overflow-hidden my-auto">
             <!-- Confetti background effect -->
             <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                <div class="absolute top-10 left-10 text-yellow-200 text-4xl animate-bounce" style="animation-duration: 2s"><i class="fa-solid fa-star"></i></div>
-                <div class="absolute bottom-20 right-10 text-blue-100 text-5xl animate-bounce" style="animation-duration: 3s"><i class="fa-solid fa-certificate"></i></div>
+                <div class="absolute top-10 left-10 text-yellow-200 text-5xl animate-bounce" style="animation-duration: 2s"><i class="fa-solid fa-star"></i></div>
+                <div class="absolute bottom-20 right-10 text-blue-100 text-6xl animate-bounce" style="animation-duration: 3s"><i class="fa-solid fa-certificate"></i></div>
+                <div class="absolute top-1/2 left-5 text-pink-100 text-4xl animate-pulse"><i class="fa-solid fa-heart"></i></div>
+                <div class="absolute top-20 right-20 text-green-100 text-5xl animate-pulse"><i class="fa-solid fa-leaf"></i></div>
             </div>
             
             <div class="relative z-10">
-                <div class="w-32 h-32 mx-auto bg-gradient-to-br from-yellow-100 to-yellow-50 rounded-full flex items-center justify-center mb-6 shadow-inner border-4 border-white ring-4 ring-yellow-50">
-                    <i class="fa-solid fa-trophy text-6xl text-yellow-500 drop-shadow-sm"></i>
+                <div class="w-32 h-32 lg:w-40 lg:h-40 mx-auto bg-gradient-to-br from-yellow-100 to-yellow-50 rounded-full flex items-center justify-center mb-6 lg:mb-8 shadow-inner border-8 border-white ring-4 ring-yellow-50">
+                    <i class="fa-solid fa-trophy text-6xl lg:text-7xl text-yellow-500 drop-shadow-sm"></i>
                 </div>
                 
-                <h2 class="text-3xl font-bold text-slate-800 mb-2">บันทึกคะแนนเรียบร้อย!</h2>
-                <div class="bg-slate-50 rounded-2xl p-4 mb-6 inline-block w-full">
-                     <p class="text-slate-500 text-lg">ผู้เข้าสอบ</p>
-                     <p id="result-name" class="font-bold text-blue-700 text-2xl truncate px-4"></p>
+                <h2 class="text-3xl lg:text-5xl font-bold text-slate-800 mb-4">บันทึกคะแนนเรียบร้อย!</h2>
+                
+                <div class="bg-slate-50 rounded-3xl p-6 lg:p-8 mb-8 inline-block w-full border border-slate-100">
+                     <p class="text-slate-500 text-xl mb-2">ผู้เข้าสอบ</p>
+                     <p id="result-name" class="font-bold text-blue-700 text-2xl lg:text-4xl px-4 break-words"></p>
                 </div>
                 
-                <div class="bg-slate-800 text-white rounded-3xl p-8 mb-8 shadow-xl relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full -mr-10 -mt-10 transform group-hover:scale-150 transition-transform duration-700"></div>
+                <div class="bg-slate-800 text-white rounded-[2.5rem] p-8 lg:p-12 mb-10 shadow-2xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-48 h-48 bg-white opacity-5 rounded-full -mr-16 -mt-16 transform group-hover:scale-150 transition-transform duration-700"></div>
                     
-                    <p class="text-base text-slate-300 uppercase tracking-widest font-bold mb-2">คะแนนรวม</p>
-                    <div class="flex justify-center items-end gap-2 leading-none">
-                        <span id="result-score" class="text-7xl font-black text-white tracking-tighter"></span>
-                        <span class="text-3xl text-slate-400 font-bold mb-2">/ <span id="result-total"></span></span>
+                    <p class="text-lg lg:text-xl text-slate-300 uppercase tracking-[0.2em] font-bold mb-4">คะแนนรวม</p>
+                    <div class="flex justify-center items-baseline gap-3 leading-none">
+                        <span id="result-score" class="text-8xl lg:text-9xl font-black text-white tracking-tighter"></span>
+                        <span class="text-4xl lg:text-5xl text-slate-400 font-bold">/ <span id="result-total"></span></span>
                     </div>
                 </div>
                 
-                <p id="result-feedback" class="font-bold text-xl mb-8"></p>
+                <p id="result-feedback" class="font-bold text-2xl lg:text-3xl mb-10"></p>
 
-                <button onclick="goToHome()" class="w-full bg-white text-slate-700 font-bold text-xl py-4 px-6 rounded-2xl border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-colors flex justify-center items-center gap-3">
+                <button onclick="goToHome()" class="w-full bg-white text-slate-700 font-bold text-xl lg:text-2xl py-5 px-8 rounded-2xl border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-colors flex justify-center items-center gap-3">
                     <i class="fa-solid fa-house"></i>
                     กลับสู่หน้าแรก
                 </button>
@@ -337,7 +368,7 @@
             { id: 5, question: "ผลงานศิลปะบนพื้นระนาบ ต้องสร้างสรรค์ผลงานบนแม่พิมพ์ก่อน จัดอยู่ในศิลปะแขนงใด", options: ["จิตรกรรม", "สถาปัตยกรรม", "ภาพพิมพ์", "สื่อประสม"], answer: "ภาพพิมพ์" },
             { id: 6, question: "งานประพันธ์ต่าง ๆ ทั้งรูปแบบร้อยแก้วและร้อยกรอง โดยการเรียบเรียงถ้อยคำเป็นบทประพันธ์ที่สละสลวยและสวยงาม จัดอยู่ในศิลปะแขนงใด", options: ["ศิลปะภาพถ่าย", "วรรณกรรม", "การตัดตอวิดีโอ", "การแสดงละคร"], answer: "วรรณกรรม" },
             { id: 7, question: "ความสมดุลแบบซ้ายขวาเท่ากัน เรียกอีกอย่างหนึ่งว่าสิ่งใด", options: ["ความสมดุลแบบสมมาตร", "ความสมดุลแบบอสมมาตร", "ความสมดุลแบบลงตัว", "ความสมดุลแบบไม่ลงตัว"], answer: "ความสมดุลแบบสมมาตร" },
-            { id: 8, question: "การเคลื่อนไหวที่เกิดจาการซ้ำกันขององค์ประกอบศิลป์ เป็นการซ้ำกันที่เป็นระเบียบ ใช้หลักการและกฎเกณฑ์ขององค์ประกอบศิลป์ข้อใด", options: ["เอกภาพ (Unity)", "สัดส่วน (Proportion)", "จังหวะลีลา (Rhythm)", "การเนน (Emphasis)"], answer: "จังหวะลีลา (Rhythm)" },
+            { id: 8, question: "การเคลื่อนไหวที่เกิดจาการซ้ำกันขององค์ประกอบศิลป์ เป็นการซ้ำกันที่เป็นระเบียบ ใช้หลักการและกฎเกณฑ์ขององค์ประกอบศิลป์ข้อใด", options: ["เอกภาพ (Unity)", "สัดส่วน (Proportion)", "จังหวะลีลา (Rhythm)", "การเน้น (Emphasis)"], answer: "จังหวะลีลา (Rhythm)" },
             { id: 9, question: "องค์ประกอบศิลป์ที่เกิดจากการรวมตัวกันอย่างเป็นระเบียบและมีดุลยภาพ ประกอบขึ้นเป็นรูปทรง ผ่านทางอารมณ์ของศิลปิน เป็นความหมายของสิ่งใด", options: ["ความโดดเด่น", "การผันแปร", "เอกภาพของการแสดงออก", "เอกภาพของรูปทรง"], answer: "เอกภาพของการแสดงออก" },
             { id: 10, question: "การเน้นส่วนใดส่วนหนึ่ง หรือจุดใดจุดหนึ่งสามารถกระทำได้กี่วิธี", options: ["2 วิธี", "3 วิธี", "4 วิธี", "5 วิธี"], answer: "3 วิธี" },
             { id: 11, question: "การจัด การวาง การขีด การเขียน การผสม การทา เป็นความหมายของสิ่งใด", options: ["ทัศนศิลป์", "ทัศนธาตุ", "วิจิตรศิลป์", "ประยุกต์ศิลป์"], answer: "ทัศนศิลป์" },
@@ -403,8 +434,9 @@
             
             // Set Header Info
             document.getElementById('display-username').innerText = currentUser.name;
-            document.getElementById('display-studentid').innerText = currentUser.studentId;
-            // document.getElementById('question-total-num').innerText = QUIZ_DATA.length;
+            const studentIdDisplay = currentUser.studentId;
+            document.getElementById('display-studentid').innerText = studentIdDisplay;
+            document.getElementById('display-studentid-mobile').innerText = studentIdDisplay;
             
             renderQuestion();
             document.getElementById('screen-quiz').classList.remove('screen-hidden');
@@ -423,13 +455,13 @@
             
             if (percentage >= 80) {
                 feedbackEl.innerText = "ยอดเยี่ยมมาก! 🏆";
-                feedbackEl.className = "font-bold text-2xl text-green-600";
+                feedbackEl.className = "font-bold text-2xl lg:text-3xl text-green-600";
             } else if (percentage >= 50) {
                 feedbackEl.innerText = "ทำได้ดีครับ พยายามอีกนิดนะ 👍";
-                feedbackEl.className = "font-bold text-2xl text-yellow-600";
+                feedbackEl.className = "font-bold text-2xl lg:text-3xl text-yellow-600";
             } else {
                 feedbackEl.innerText = "ต้องทบทวนบทเรียนเพิ่มเติมนะครับ 📚";
-                feedbackEl.className = "font-bold text-2xl text-red-600";
+                feedbackEl.className = "font-bold text-2xl lg:text-3xl text-red-600";
             }
 
             document.getElementById('screen-result').classList.remove('screen-hidden');
@@ -467,17 +499,17 @@
                 // ปรับแต่ง Top 3
                 if (idx === 0) {
                     // ที่ 1: ทอง
-                    rankBadge = '<div class="relative"><i class="fa-solid fa-trophy text-yellow-400 text-3xl drop-shadow-md"></i><span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-2/3 text-xs font-bold text-yellow-700">1</span></div>';
+                    rankBadge = '<div class="relative"><i class="fa-solid fa-trophy text-yellow-400 text-3xl lg:text-4xl drop-shadow-md"></i><span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-2/3 text-xs font-bold text-yellow-700">1</span></div>';
                     rowClass = 'bg-gradient-to-r from-yellow-50/60 via-white to-white hover:from-yellow-100/50 transition-all duration-300 border-b border-yellow-100';
                     textClass = 'text-slate-800 font-semibold';
                 } else if (idx === 1) {
                     // ที่ 2: เงิน
-                    rankBadge = '<div class="relative"><i class="fa-solid fa-medal text-slate-400 text-3xl drop-shadow-sm"></i><span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-2/3 text-xs font-bold text-white">2</span></div>';
+                    rankBadge = '<div class="relative"><i class="fa-solid fa-medal text-slate-400 text-3xl lg:text-4xl drop-shadow-sm"></i><span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-2/3 text-xs font-bold text-white">2</span></div>';
                     rowClass = 'bg-gradient-to-r from-slate-50 via-white to-white hover:from-slate-100/60 transition-all duration-300 border-b border-slate-100';
                     textClass = 'text-slate-800 font-semibold';
                 } else if (idx === 2) {
                     // ที่ 3: ทองแดง
-                    rankBadge = '<div class="relative"><i class="fa-solid fa-medal text-amber-600 text-3xl drop-shadow-sm"></i><span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-2/3 text-xs font-bold text-amber-100">3</span></div>';
+                    rankBadge = '<div class="relative"><i class="fa-solid fa-medal text-amber-600 text-3xl lg:text-4xl drop-shadow-sm"></i><span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-2/3 text-xs font-bold text-amber-100">3</span></div>';
                     rowClass = 'bg-gradient-to-r from-orange-50/40 via-white to-white hover:from-orange-50/60 transition-all duration-300 border-b border-orange-50';
                     textClass = 'text-slate-800 font-semibold';
                 } else {
@@ -499,7 +531,7 @@
                     </td>
                     <td class="p-4">
                         <div class="min-w-0">
-                            <div class="text-base sm:text-lg ${textClass} truncate max-w-[150px] sm:max-w-xs">${entry.name}</div>
+                            <div class="text-responsive-base ${textClass} truncate max-w-[120px] sm:max-w-xs">${entry.name}</div>
                             <div class="text-xs sm:text-sm text-slate-400 font-light flex items-center gap-1">
                                 <i class="fa-solid fa-id-card text-[10px]"></i> ${entry.studentId}
                             </div>
@@ -507,7 +539,7 @@
                     </td>
                     <td class="p-4 pr-6 text-center">
                         <div class="flex flex-col items-center leading-none">
-                            <span class="text-2xl font-bold ${scoreColor}">${entry.score}</span>
+                            <span class="text-2xl lg:text-3xl font-bold ${scoreColor}">${entry.score}</span>
                             <span class="text-xs text-slate-400 font-medium bg-slate-100 px-2 py-0.5 rounded-full mt-1">เต็ม ${entry.total}</span>
                         </div>
                     </td>
@@ -567,20 +599,20 @@
             question.options.forEach((option, idx) => {
                 const label = document.createElement('label');
                 // New Styling classes
-                label.className = "block relative group cursor-pointer animate-slide-up-fade";
+                label.className = "block relative group cursor-pointer animate-slide-up-fade h-full";
                 label.style.animationDelay = `${idx * 0.1}s`; // Stagger effect
                 label.id = `option-label-${idx}`;
                 
                 label.innerHTML = `
                     <input type="radio" name="quiz-option" value="${option}" class="peer sr-only" onchange="selectOption('${option.replace(/'/g, "\\'")}', ${idx})">
                     
-                    <div class="flex items-center p-4 sm:p-5 rounded-2xl border-2 border-slate-100 bg-white hover:border-blue-300 hover:shadow-md transition-all duration-200 peer-checked:border-blue-600 peer-checked:bg-blue-600 peer-checked:text-white peer-checked:shadow-blue-200 peer-checked:shadow-lg transform hover:-translate-y-1">
+                    <div class="flex items-center p-5 lg:p-6 rounded-2xl border-2 border-slate-100 bg-white hover:border-blue-300 hover:shadow-md transition-all duration-200 peer-checked:border-blue-600 peer-checked:bg-blue-600 peer-checked:text-white peer-checked:shadow-blue-200 peer-checked:shadow-lg transform hover:-translate-y-1 h-full">
                         
-                        <div class="flex-shrink-0 w-8 h-8 rounded-full border-2 border-slate-300 mr-4 flex items-center justify-center peer-checked:border-white peer-checked:bg-white/20 transition-all">
-                             <div class="w-3 h-3 bg-white rounded-full transform scale-0 peer-checked:scale-100 transition-transform"></div>
+                        <div class="flex-shrink-0 w-8 h-8 lg:w-10 lg:h-10 rounded-full border-2 border-slate-300 mr-4 flex items-center justify-center peer-checked:border-white peer-checked:bg-white/20 transition-all">
+                             <div class="w-3 h-3 lg:w-4 lg:h-4 bg-white rounded-full transform scale-0 peer-checked:scale-100 transition-transform"></div>
                         </div>
                         
-                        <span class="text-lg sm:text-xl text-slate-600 font-medium group-hover:text-blue-600 peer-checked:group-hover:text-white transition-colors option-text">${option}</span>
+                        <span class="text-xl lg:text-2xl text-slate-600 font-medium group-hover:text-blue-600 peer-checked:group-hover:text-white transition-colors option-text leading-snug">${option}</span>
                     </div>
                 `;
                 optionsContainer.appendChild(label);
@@ -606,26 +638,26 @@
             if (selectedOption) {
                 // Enabled state
                 btnNext.disabled = false;
-                btnNext.className = "group relative overflow-hidden font-bold text-xl py-3.5 px-10 rounded-2xl flex items-center gap-3 transition-all shadow-lg shadow-blue-500/30 bg-blue-600 text-white hover:bg-blue-700 transform hover:-translate-y-1 cursor-pointer";
+                btnNext.className = "w-full sm:w-auto group relative overflow-hidden font-bold text-xl lg:text-2xl py-4 px-12 rounded-2xl flex justify-center items-center gap-3 transition-all shadow-lg shadow-blue-500/30 bg-blue-600 text-white hover:bg-blue-700 transform hover:-translate-y-1 cursor-pointer";
                 
                 if (isLastQuestion) {
                     btnText.innerText = "ส่งคำตอบ";
                     btnIcon.className = "fa-solid fa-check-circle relative z-10 transition-transform group-hover:scale-125";
                 } else {
                     btnText.innerText = "ข้อถัดไป";
-                    btnIcon.className = "fa-solid fa-chevron-right text-sm relative z-10 transition-transform group-hover:translate-x-1";
+                    btnIcon.className = "fa-solid fa-chevron-right text-base lg:text-lg relative z-10 transition-transform group-hover:translate-x-1";
                 }
             } else {
                 // Disabled state
                 btnNext.disabled = true;
-                btnNext.className = "group relative overflow-hidden font-bold text-xl py-3.5 px-10 rounded-2xl flex items-center gap-3 transition-all shadow-none bg-slate-200 text-slate-400 cursor-not-allowed";
+                btnNext.className = "w-full sm:w-auto group relative overflow-hidden font-bold text-xl lg:text-2xl py-4 px-12 rounded-2xl flex justify-center items-center gap-3 transition-all shadow-none bg-slate-200 text-slate-400 cursor-not-allowed";
                 
                 if (isLastQuestion) {
                     btnText.innerText = "ส่งคำตอบ";
                     btnIcon.className = "fa-solid fa-check-circle";
                 } else {
                     btnText.innerText = "ข้อถัดไป";
-                    btnIcon.className = "fa-solid fa-chevron-right text-sm";
+                    btnIcon.className = "fa-solid fa-chevron-right text-base lg:text-lg";
                 }
             }
         }
